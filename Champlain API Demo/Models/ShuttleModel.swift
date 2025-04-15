@@ -21,18 +21,18 @@ class ShuttleViewModel: NSObject {
     enum FetchError: Error {
         case badRequest
     }
+
     static var shared = ShuttleViewModel()
-    
-    var annotations: [ShuttleAnnotation] = []
-    var shuttles: [Shuttle] = [Shuttle]()
-    var lastUpdated: Date = Date.distantPast
+
+    var shuttles: [Shuttle] = .init()
+    var lastUpdated: Date = .distantPast
 
     func fetchData() async throws {
         let apiRequest = APIRequest()
         let (data, _) = try await apiRequest.makeRequest(endpoint: "/shuttles")
 
         do {
-            shuttles = try JSONDecoder().decode([Shuttle].self, from: data)
+            self.shuttles = try JSONDecoder().decode([Shuttle].self, from: data)
             self.lastUpdated = Date.now
         } catch {
             print(error)
@@ -44,9 +44,9 @@ class ShuttleAnnotation: NSObject, MKAnnotation {
     @objc dynamic var coordinate = CLLocationCoordinate2D(latitude: 44.4788, longitude: -73.1950)
     var shuttleID: Int
     var title: String? = "Annotation title"
-    @objc dynamic var direction: Int = 0
-    @objc dynamic var subtitle: String? {
-        return String(describing: direction)
+    var direction: Int = 0
+    var subtitle: String? {
+        return String(describing: self.direction)
     }
 
     init(
@@ -60,6 +60,22 @@ class ShuttleAnnotation: NSObject, MKAnnotation {
         self.title = title
         self.direction = direction
         super.init()
+    }
+
+    func returnGlyphImageForDirection() -> UIImage {
+        let quadrantDirection = (self.direction / 90) % 4
+        switch quadrantDirection {
+        case 0:
+            return UIImage(systemName: "arrow.up")!
+        case 1:
+            return UIImage(systemName: "arrow.right")!
+        case 2:
+            return UIImage(systemName: "arrow.down")!
+        case 3:
+            return UIImage(systemName: "arrow.left")!
+        default:
+            return UIImage(systemName: "bus.fill")!
+        }
     }
 
 }

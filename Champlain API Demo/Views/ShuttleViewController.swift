@@ -12,7 +12,6 @@ class ShuttleViewController: UIViewController {
     let mapView = MKMapView()
     let vm = ShuttleViewModel.shared
     var timer = Timer()
-    var didCreateInitialMarkers = false
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -91,37 +90,39 @@ class ShuttleViewController: UIViewController {
                 return
             }
             self.contentUnavailableConfiguration = nil
-            
-            // some code from https://stackoverflow.com/a/73032295
-            
-            for shuttleAnnotation in vm.annotations {
+
+            // Check if the number of shuttles that the API responds with
+            // is different than the number of annotations we have on our map
+            if mapView.annotations.count != vm.shuttles.count {
+                mapView.removeAnnotations(mapView.annotations)
+
+                for shuttle in vm.shuttles {
+                    let shuttleAnnotation = ShuttleAnnotation(
+                        coordinate: CLLocationCoordinate2D(latitude: shuttle.lat, longitude: shuttle.lon),
+                        shuttleID: shuttle.id,
+                        direction: shuttle.direction
+                    )
+                    shuttleAnnotation.title = "Shuttle \(shuttle.id)"
+                    mapView.addAnnotation(shuttleAnnotation)
+                }
+            }
+
+            for mapAnnotation in mapView.annotations {
                 UIView.animate(withDuration: 0.5) { [self] in
-                    if let shuttle = vm.shuttles.first(where: { $0.id == shuttleAnnotation.shuttleID }) {
+                    if let shuttleAnnotation = mapAnnotation as? ShuttleAnnotation, let shuttle = vm.shuttles.first(
+                        where: {$0.id == shuttleAnnotation.shuttleID }) {
                         shuttleAnnotation.coordinate = CLLocationCoordinate2D(
-                            latitude: CLLocationDegrees(shuttle.lat),
-                            longitude: CLLocationDegrees(shuttle.lon)
+                            latitude: shuttle.lat,
+                            longitude: shuttle.lon
                         )
                         shuttleAnnotation.direction = shuttle.direction
+                        if let markerView = mapView.view( for: shuttleAnnotation) as? MKMarkerAnnotationView {
+                            markerView.glyphImage = shuttleAnnotation.returnGlyphImageForDirection()
+                        }
                     }
                 }
             }
-            
-            if vm.shuttles.count == vm.annotations.count {return}
-            
-            for shuttle in vm.shuttles {
-                let shuttleAnnotation = ShuttleAnnotation(
-                    coordinate: CLLocationCoordinate2D(latitude: shuttle.lat, longitude: shuttle.lon),
-                    shuttleID: shuttle.id,
-                    direction: shuttle.direction
-                )
-                shuttleAnnotation.title = "Shuttle \(shuttle.id)"
-                vm.annotations.append(shuttleAnnotation)
-            }
-            
-            mapView.addAnnotations(vm.annotations)
-            
-            didCreateInitialMarkers = true
-            
+
             mapView.isHidden = false
             self.contentUnavailableConfiguration = nil
         }
@@ -156,25 +157,13 @@ private func setupShuttleAnnotation(for annotation: ShuttleAnnotation, on mapVie
         markerAnnotationView.animatesWhenAdded = true
         markerAnnotationView.canShowCallout = true
 
-        // TODO: find a way for this to update on each update
-        markerAnnotationView.glyphText = "\(annotation.direction)"
-//        markerAnnotationView.glyphImage = {
-//            if annotation.direction > 0 && annotation.direction <= 90 {
-//                return UIImage(systemName: "arrow.up")
-//            } else if annotation.direction > 90 && annotation.direction <= 180 {
-//                return UIImage(systemName: "arrow.right")
-//            } else if annotation.direction > 180 && annotation.direction <= 270 {
-//                return UIImage(systemName: "arrow.down")
-//            } else if annotation.direction > 271 && annotation.direction <= 360 {
-//                return UIImage(systemName: "arrow.left")
-//            }
-//            else {
-//                return UIImage(systemName: "bus.fill")
-//            }
-//        }()
+        markerAnnotationView.glyphImage = annotation.returnGlyphImageForDirection()
+
         markerAnnotationView.markerTintColor = UIColor.black
         let rightButton = UIButton(type: .detailDisclosure)
         markerAnnotationView.rightCalloutAccessoryView = rightButton
     }
     return view
 }
+
+
