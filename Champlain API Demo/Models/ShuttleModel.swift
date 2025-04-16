@@ -45,9 +45,7 @@ class ShuttleAnnotation: NSObject, MKAnnotation {
     var shuttleID: Int
     var title: String? = "Annotation title"
     var direction: Int = 0
-    var subtitle: String? {
-        return String(describing: self.direction)
-    }
+    @objc dynamic var subtitle: String?
 
     init(
         coordinate: CLLocationCoordinate2D,
@@ -63,7 +61,7 @@ class ShuttleAnnotation: NSObject, MKAnnotation {
     }
 
     func returnGlyphImageForDirection() -> UIImage {
-        let quadrantDirection = (self.direction / 90) % 4
+        let quadrantDirection = (((self.direction + 45) % 360) / 90)
         switch quadrantDirection {
         case 0:
             return UIImage(systemName: "arrow.up")!

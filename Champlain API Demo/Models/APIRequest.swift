@@ -13,7 +13,7 @@ struct APIRequest {
     }
 
     func makeRequest(endpoint: String) async throws -> (data: Data, response: URLResponse) {
-        guard let url = URL(string: "http://containers.mahi-duck.ts.net:3000" + endpoint) else { throw FetchError.invalidURL }
+        guard let url = URL(string: "http://containers.mahi-duck.ts.net:3000/api" + endpoint) else { throw FetchError.invalidURL }
         
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForResource = 5

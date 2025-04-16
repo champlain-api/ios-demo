@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3C839E122D78C47700FDFEC3 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3C839E112D78C47700FDFEC3 /* SnapKit */; };
+		3C9DB11B2DAF735C00992923 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 3C9DB11A2DAF735C00992923 /* Kingfisher */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3C9DB11B2DAF735C00992923 /* Kingfisher in Frameworks */,
 				3C839E122D78C47700FDFEC3 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -84,6 +86,7 @@
 			name = "Champlain API Demo";
 			packageProductDependencies = (
 				3C839E112D78C47700FDFEC3 /* SnapKit */,
+				3C9DB11A2DAF735C00992923 /* Kingfisher */,
 			);
 			productName = "Champlain API Demo";
 			productReference = 3C839DF62D78C20C00FDFEC3 /* Champlain API Demo.app */;
@@ -115,6 +118,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				3C839E102D78C47700FDFEC3 /* XCRemoteSwiftPackageReference "SnapKit" */,
+				3C9DB1192DAF735C00992923 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3C839DF72D78C20C00FDFEC3 /* Products */;
@@ -362,6 +366,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		3C9DB1192DAF735C00992923 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.3.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -369,6 +381,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 3C839E102D78C47700FDFEC3 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		3C9DB11A2DAF735C00992923 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3C9DB1192DAF735C00992923 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

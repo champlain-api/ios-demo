@@ -11,12 +11,14 @@ class TabBarViewController: UITabBarController {
         super.init(nibName: nil, bundle: nil)
         let homeViewController = UINavigationController(rootViewController: HomeViewController())
         let shuttleViewController = UINavigationController(rootViewController: ShuttleViewController())
-        setViewControllers([homeViewController, shuttleViewController], animated: false)
+        let houseViewController = UINavigationController(rootViewController: HousingViewController())
+
+        setViewControllers([homeViewController, shuttleViewController, houseViewController], animated: false)
 
         let appearance = UITabBarAppearance()
         appearance.configureWithDefaultBackground()
         tabBar.standardAppearance = appearance
-        tabBar.scrollEdgeAppearance = tabBar.standardAppearance
+        tabBar.scrollEdgeAppearance = appearance
     }
 
     required init?(coder _: NSCoder) {

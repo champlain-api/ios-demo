@@ -8,6 +8,7 @@ import MapKit
 import UIKit
 import SnapKit
 
+
 class ShuttleViewController: UIViewController {
     let mapView = MKMapView()
     let vm = ShuttleViewModel.shared
@@ -15,7 +16,7 @@ class ShuttleViewController: UIViewController {
 
     init() {
         super.init(nibName: nil, bundle: nil)
-        tabBarItem = UITabBarItem(title: "Shuttle", image: UIImage(systemName: "bus.fill"), tag: 1)
+        tabBarItem = UITabBarItem(title: "Shuttle Tracker", image: UIImage(systemName: "bus.fill"), tag: 1)
         mapView.delegate = self
     }
     
@@ -75,18 +76,10 @@ class ShuttleViewController: UIViewController {
                 mapView.isHidden = true
                 var empty = UIContentUnavailableConfiguration.empty()
                 empty.text = "No Shuttles Found"
-                empty.secondaryText = "There were no shuttles found. Please try again later."
+                empty.secondaryText = "No shuttles have currently been updated within the past 2 hours. Please try again later."
                 empty.image = UIImage(systemName: "slash.circle")
-                
-//                var retryButton = UIButton.Configuration.borderless()
-//                retryButton.title = "Refresh"
-//                empty.button = retryButton
-//                empty.buttonProperties.primaryAction = UIAction(handler: { handler in
-//                    print("clicked")
-//                })
-                
+
                 self.contentUnavailableConfiguration = empty
-                
                 return
             }
             self.contentUnavailableConfiguration = nil
@@ -103,19 +96,21 @@ class ShuttleViewController: UIViewController {
                         direction: shuttle.direction
                     )
                     shuttleAnnotation.title = "Shuttle \(shuttle.id)"
+                    shuttleAnnotation.subtitle = "MPH: \(shuttle.mph)"
                     mapView.addAnnotation(shuttleAnnotation)
                 }
             }
 
             for mapAnnotation in mapView.annotations {
                 UIView.animate(withDuration: 0.5) { [self] in
-                    if let shuttleAnnotation = mapAnnotation as? ShuttleAnnotation, let shuttle = vm.shuttles.first(
+                    if let shuttleAnnotation = mapAnnotation as? ShuttleAnnotation,let shuttle = vm.shuttles.first(
                         where: {$0.id == shuttleAnnotation.shuttleID }) {
                         shuttleAnnotation.coordinate = CLLocationCoordinate2D(
                             latitude: shuttle.lat,
                             longitude: shuttle.lon
                         )
                         shuttleAnnotation.direction = shuttle.direction
+                        shuttleAnnotation.subtitle = "MPH: \(shuttle.mph)"
                         if let markerView = mapView.view( for: shuttleAnnotation) as? MKMarkerAnnotationView {
                             markerView.glyphImage = shuttleAnnotation.returnGlyphImageForDirection()
                         }
@@ -141,12 +136,12 @@ extension ShuttleViewController: MKMapViewDelegate {
         return annotationView
     }
     
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
-        if let annotation = view.annotation, annotation.isKind(of: ShuttleAnnotation.self) {
-            // TODO: add a sheet here
-            print("annotation tapped")
-        }
-    }
+//    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+//        if let annotation = view.annotation, annotation.isKind(of: ShuttleAnnotation.self) {
+//            // TODO: add a sheet here
+//            print("annotation tapped")
+//        }
+//    }
 
 }
 
@@ -159,7 +154,7 @@ private func setupShuttleAnnotation(for annotation: ShuttleAnnotation, on mapVie
 
         markerAnnotationView.glyphImage = annotation.returnGlyphImageForDirection()
 
-        markerAnnotationView.markerTintColor = UIColor.black
+        markerAnnotationView.markerTintColor = UIColor.label
         let rightButton = UIButton(type: .detailDisclosure)
         markerAnnotationView.rightCalloutAccessoryView = rightButton
     }

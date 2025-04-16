@@ -26,6 +26,8 @@ struct Announcement: Decodable, Hashable {
 }
 
 class AnnouncementViewModel: NSObject {
+
+    static var shared = AnnouncementViewModel()
     enum FetchError: Error {
         case badRequest
     }

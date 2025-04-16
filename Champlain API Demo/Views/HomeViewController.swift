@@ -7,18 +7,17 @@
 import UIKit
 
 class HomeViewController: UIViewController {
-    let announcementsStackView = UIStackView()
+    let announcementsVM = AnnouncementViewModel.shared
     init() {
         super.init(nibName: nil, bundle: nil)
-        tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house.fill"), tag: 0)
+        tabBarItem = UITabBarItem(title: "Info", image: UIImage(systemName: "info.square.fill"), tag: 0)
 
         let announcementsButton = UIBarButtonItem(
-            image: UIImage(systemName: "bell.circle"),
+            image: UIImage(systemName: "bell.fill"),
             style: .plain,
             target: self,
             action: #selector(openAnnouncementsVC)
         )
-        self.tabBarItem.badgeValue = "2"
 
         navigationItem.rightBarButtonItem = announcementsButton
     }
@@ -31,6 +30,11 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         title = "Home"
         view.backgroundColor = .systemBackground
+        Task {
+            try? await announcementsVM.fetchData()
+            self.tabBarItem.badgeValue = String(announcementsVM.announcements.count)
+
+        }
     }
 
     @objc func openAnnouncementsVC() {

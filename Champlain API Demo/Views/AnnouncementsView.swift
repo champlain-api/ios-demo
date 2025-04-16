@@ -15,7 +15,7 @@ class AnnouncementsView: UIViewController {
 
     var dataSource: UICollectionViewDiffableDataSource<Section, Announcement>! = nil
     var collectionView: UICollectionView! = nil
-    let vm = AnnouncementViewModel()
+    let vm = AnnouncementViewModel.shared
 
     override func viewDidLoad() {
         super.viewDidLoad()
